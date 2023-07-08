@@ -4,9 +4,89 @@ const logger = require('./logger.js');
 const app = express();
 
 /*
+* 错误处理
+* **/
+// 可以连续处理错误
+app.use((request,response,next)=>{
+    console.log('1');
+    next()
+})
+
+app.use((request,response,next)=>{
+    console.log('2');
+    if(true){
+        next('Not Login')
+    }else{
+        next()
+    }
+})
+app.use((request,response,next)=>{
+    console.log('3');
+    next()
+})
+app.use((error,request,response,next)=>{
+    console.log(error);
+    next(error)
+})
+let count = 0
+app.use((error,request,response,next)=>{
+    count += 1
+    console.log(`目前有${count}个错误`);
+    next(error)
+})
+
+// 官方的处理错误
+// app.use((request,response,next)=>{
+//     console.log('1');
+//     next()
+// })
+//
+// app.use((request,response,next)=>{
+//     console.log('2');
+//     if(true){
+//         next('Not Login')
+//     }else{
+//         next()
+//     }
+// })
+// app.use((request,response,next)=>{
+//     console.log('3');
+//     next()
+// })
+// app.use((error,request,response,next)=>{
+//     if (response.headersSent) {
+//         return next(error)
+//     }
+//     response.status(500)
+//     response.send('未登录')
+// })
+// app.use((request,response,next)=>{
+//     response.write('1')
+//     next()
+// })
+//
+// app.use((request,response,next)=>{
+//     response.write('2')
+//     if(true){
+//         next('Not Login')
+//     }else{
+//         next()
+//     }
+// })
+// app.use((request,response,next)=>{
+//     response.write('3')
+//     next()
+// })
+// app.use((error,request,response,next)=>{
+//     response.write(error)
+//     response.end()
+//     next()
+// })
+
+/*
 * Express的中间件以及模块化
 * **/
-app.use(logger('dev'));
+// app.use(logger('dev'));
 
 // app.use('/xxx',(request,response,next)=>{
 //     response.send('xxx页面')
